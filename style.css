@@ -115,3 +115,31 @@ li {
 .delete-button:hover {
     background-color: #c0392b;
 }
+
+.delete-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: auto; /* Sposta il pulsante "Elimina" a destra */
+    margin-bottom: 10px; /* Aggiungi margine inferiore per separare dall'input */
+}
+
+.order-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    position: relative; /* Per posizionare il pulsante "Elimina" in modo assoluto */
+}
+
+.delete-button {
+    position: absolute;
+    bottom: 5px; /* Posiziona il pulsante "Elimina" a 5px dal basso */
+    left: 50%; /* Centra orizzontalmente il pulsante "Elimina" */
+    transform: translateX(-50%); /* Centra orizzontalmente il pulsante "Elimina" rispetto al suo contenitore */
+}

@@ -29,18 +29,16 @@ document.addEventListener('DOMContentLoaded', () => {
         decreaseButton.textContent = '-';
         decreaseButton.className = 'quantity-button decrease';
         decreaseButton.addEventListener('click', () => {
-            if (quantity > 1) {
-                modifyOrder(table, bottle, quantity - 1);
-            }
+            modifyOrder(table, bottle, Math.max(0, quantity - 1)); // Permette di impostare a zero ma non meno
         });
         quantityContainer.appendChild(decreaseButton);
 
         const quantityInput = document.createElement('input');
         quantityInput.type = 'number';
         quantityInput.value = quantity;
-        quantityInput.min = 1;
+        quantityInput.min = 0; // Consentire di portare la quantità a zero
         quantityInput.addEventListener('change', (event) => {
-            modifyOrder(table, bottle, event.target.value);
+            modifyOrder(table, bottle, Math.max(0, event.target.value)); // Permette di impostare a zero ma non meno
         });
         quantityContainer.appendChild(quantityInput);
 
@@ -94,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 padding: 10px;
                 border: 1px solid #ddd;
                 margin-bottom: 10px;
+                margin-left: -40px; /* Posiziona il container più a sinistra */
             }
 
             .order-text {
@@ -127,7 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 padding: 5px 10px;
                 cursor: pointer;
                 transition: background-color 0.3s ease;
-                margin-left: auto;
+                align-self: center; /* Centra il tasto di eliminazione */
+                margin-top: 10px; /* Sposta il tasto di eliminazione sotto il modificatore di quantità */
             }
 
             .delete-button:hover {
@@ -148,55 +148,54 @@ document.addEventListener('DOMContentLoaded', () => {
         tableSelect.appendChild(option);
     }
 
-// Carica ordini dal LocalStorage
-const loadOrders = () => {
-    orderList.innerHTML = '';
-    const orders = JSON.parse(localStorage.getItem('orders')) || {};
-    for (const [table, items] of Object.entries(orders)) {
-        items.forEach((item, index) => {
-            const li = document.createElement('li');
-            li.className = 'order-item';
-            li.style.display = 'flex';
-            li.style.justifyContent = 'space-between';
-            li.style.alignItems = 'center';
-            li.style.padding = '10px';
-            li.style.border = '1px solid #ddd';
-            li.style.marginBottom = '10px';
-            li.style.marginLeft = '-40px'; // Posiziona il container più a sinistra
-            
-            const orderText = document.createElement('span');
-            orderText.className = 'order-text';
-            orderText.textContent = `Tavolo ${table}: ${item.quantity}x ${item.bottle}`;
-            li.appendChild(orderText);
+    // Carica ordini dal LocalStorage
+    const loadOrders = () => {
+        orderList.innerHTML = '';
+        const orders = JSON.parse(localStorage.getItem('orders')) || {};
+        for (const [table, items] of Object.entries(orders)) {
+            items.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'order-item';
+                li.style.display = 'flex';
+                li.style.justifyContent = 'space-between';
+                li.style.alignItems = 'center';
+                li.style.padding = '10px';
+                li.style.border = '1px solid #ddd';
+                li.style.marginBottom = '10px';
+                li.style.marginLeft = '-40px'; // Posiziona il container più a sinistra
+                
+                const orderText = document.createElement('span');
+                orderText.className = 'order-text';
+                orderText.textContent = `Tavolo ${table}: ${item.quantity}x ${item.bottle}`;
+                li.appendChild(orderText);
 
-            li.dataset.table = table;
-            li.dataset.bottle = item.bottle;
-            li.dataset.quantity = item.quantity; // Aggiunto il dataset per la quantità
+                li.dataset.table = table;
+                li.dataset.bottle = item.bottle;
+                li.dataset.quantity = item.quantity; // Aggiunto il dataset per la quantità
 
-            addQuantityInput(li, table, item.bottle, item.quantity);
+                addQuantityInput(li, table, item.bottle, item.quantity);
 
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Elimina';
-            deleteButton.className = 'delete-button';
-            deleteButton.onclick = () => removeOrder(table, item.bottle, item.quantity); // Passaggio di bottiglia e quantità
-            li.appendChild(deleteButton);
-            orderList.appendChild(li);
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Elimina';
+                deleteButton.className = 'delete-button';
+                deleteButton.onclick = () => removeOrder(table, item.bottle); // Modificato per rimuovere l'ordine senza considerare la quantità
+                li.appendChild(deleteButton);
+                orderList.appendChild(li);
 
-            // Aggiungi un separatore tra gli ordini dello stesso tavolo, tranne per l'ultimo elemento
-            if (index !== items.length - 1) {
+                // Aggiungi un separatore tra gli ordini dello stesso tavolo, tranne per l'ultimo elemento
+                if (index !== items.length - 1) {
+                    const separator = document.createElement('hr');
+                    orderList.appendChild(separator);
+                }
+            });
+
+            // Aggiungi un separatore tra gli ordini di diversi tavoli, tranne per l'ultimo tavolo
+            if (table !== Object.keys(orders)[Object.keys(orders).length - 1]) {
                 const separator = document.createElement('hr');
                 orderList.appendChild(separator);
             }
-        });
-
-        // Aggiungi un separatore tra gli ordini di diversi tavoli, tranne per l'ultimo tavolo
-        if (table !== Object.keys(orders)[Object.keys(orders).length - 1]) {
-            const separator = document.createElement('hr');
-            orderList.appendChild(separator);
         }
     }
-}
-
 
     // Salva ordini nel LocalStorage
     const saveOrder = (table, bottle, quantity) => {
@@ -222,10 +221,10 @@ const loadOrders = () => {
     }
 
     // Rimuovi ordini dal LocalStorage
-    const removeOrder = (table, bottle, quantity) => { // Aggiunto il parametro quantity
+    const removeOrder = (table, bottle) => { // Modificato per rimuovere l'ordine senza considerare la quantità
         const orders = JSON.parse(localStorage.getItem('orders')) || {};
         if (orders[table]) {
-            orders[table] = orders[table].filter(item => item.bottle !== bottle || item.quantity !== quantity); // Rimuovi solo se corrisponde alla bottiglia e quantità
+            orders[table] = orders[table].filter(item => item.bottle !== bottle); // Rimuovi solo se corrisponde alla bottiglia
             if (orders[table].length === 0) {
                 delete orders[table];
             }
