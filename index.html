@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestione Ordini Tavoli</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="manifest" href="manifest.json" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Gestione Ordini Tavoli</h1>
+      <div class="tables">
+        <!-- Genereremo i tavoli con JavaScript -->
+      </div>
+      <div class="order-form">
+        <h2>Aggiungi Ordine</h2>
+        <label for="table-select">Seleziona Tavolo:</label>
+        <select id="table-select"></select>
+
+        <label for="bottle-select">Seleziona Bottiglia:</label>
+        <select id="bottle-select">
+          <option value="Champagne">Champagne</option>
+          <option value="Vodka">Vodka</option>
+          <option value="Whisky">Whisky</option>
+          <option value="Rum">Rum</option>
+          <option value="Gin">Gin</option>
+          <!-- Aggiungi altre bottiglie se necessario -->
+        </select>
+
+        <label for="quantity-select">Quantità:</label>
+        <select id="quantity-select">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <!-- Aggiungi altre quantità se necessario -->
+        </select>
+
+        <button id="add-order">Aggiungi</button>
+      </div>
+      <div class="orders">
+        <h2>Ordini Tavolo</h2>
+        <ul id="order-list"></ul>
+      </div>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
