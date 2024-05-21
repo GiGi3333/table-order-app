@@ -90,11 +90,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
             .order-item {
                 display: flex;
-                justify-content: space-between;
-                align-items: center;
+                flex-direction: column;
                 padding: 10px;
                 border: 1px solid #ddd;
-                margin-bottom: 5px;
+                margin-bottom: 10px;
+            }
+
+            .order-text {
+                margin-bottom: 10px;
+            }
+
+            .quantity-container {
+                display: flex;
+                align-items: center;
+            }
+
+            .quantity-button {
+                width: 30px;
+                height: 30px;
+                font-size: 20px;
+                border: none;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+                margin: 0 5px;
+            }
+
+            .quantity-button:hover {
+                background-color: #e0e0e0;
             }
 
             .delete-button {
@@ -105,15 +127,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 padding: 5px 10px;
                 cursor: pointer;
                 transition: background-color 0.3s ease;
-                margin-left: 10px;
+                margin-left: auto;
             }
 
             .delete-button:hover {
                 background-color: #c0392b;
-            }
-
-            .order-text {
-                flex-grow: 1;
             }
         `;
         document.head.appendChild(style);
