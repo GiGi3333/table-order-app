@@ -148,48 +148,55 @@ document.addEventListener('DOMContentLoaded', () => {
         tableSelect.appendChild(option);
     }
 
-    // Carica ordini dal LocalStorage
-    const loadOrders = () => {
-        orderList.innerHTML = '';
-        const orders = JSON.parse(localStorage.getItem('orders')) || {};
-        for (const [table, items] of Object.entries(orders)) {
-            items.forEach((item, index) => {
-                const li = document.createElement('li');
-                li.className = 'order-item';
-                
-                const orderText = document.createElement('span');
-                orderText.className = 'order-text';
-                orderText.textContent = `Tavolo ${table}: ${item.quantity}x ${item.bottle}`;
-                li.appendChild(orderText);
+// Carica ordini dal LocalStorage
+const loadOrders = () => {
+    orderList.innerHTML = '';
+    const orders = JSON.parse(localStorage.getItem('orders')) || {};
+    for (const [table, items] of Object.entries(orders)) {
+        items.forEach((item, index) => {
+            const li = document.createElement('li');
+            li.className = 'order-item';
+            li.style.display = 'flex';
+            li.style.justifyContent = 'space-between';
+            li.style.alignItems = 'center';
+            li.style.padding = '10px';
+            li.style.border = '1px solid #ddd';
+            li.style.marginBottom = '10px';
+            li.style.marginLeft = '-40px'; // Posiziona il container più a sinistra
+            
+            const orderText = document.createElement('span');
+            orderText.className = 'order-text';
+            orderText.textContent = `Tavolo ${table}: ${item.quantity}x ${item.bottle}`;
+            li.appendChild(orderText);
 
-                li.dataset.table = table;
-                li.dataset.bottle = item.bottle;
-                li.dataset.quantity = item.quantity; // Aggiunto il dataset per la quantità
+            li.dataset.table = table;
+            li.dataset.bottle = item.bottle;
+            li.dataset.quantity = item.quantity; // Aggiunto il dataset per la quantità
 
-                addQuantityInput(li, table, item.bottle, item.quantity);
+            addQuantityInput(li, table, item.bottle, item.quantity);
 
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Elimina';
-                deleteButton.className = 'delete-button';
-                deleteButton.onclick = () => removeOrder(table, item.bottle, item.quantity); // Passaggio di bottiglia e quantità
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Elimina';
+            deleteButton.className = 'delete-button';
+            deleteButton.onclick = () => removeOrder(table, item.bottle, item.quantity); // Passaggio di bottiglia e quantità
+            li.appendChild(deleteButton);
+            orderList.appendChild(li);
 
-                li.appendChild(deleteButton);
-                orderList.appendChild(li);
-
-                // Aggiungi un separatore tra gli ordini dello stesso tavolo, tranne per l'ultimo elemento
-                if (index !== items.length - 1) {
-                    const separator = document.createElement('hr');
-                    orderList.appendChild(separator);
-                }
-            });
-
-            // Aggiungi un separatore tra gli ordini di diversi tavoli, tranne per l'ultimo tavolo
-            if (table !== Object.keys(orders)[Object.keys(orders).length - 1]) {
+            // Aggiungi un separatore tra gli ordini dello stesso tavolo, tranne per l'ultimo elemento
+            if (index !== items.length - 1) {
                 const separator = document.createElement('hr');
                 orderList.appendChild(separator);
             }
+        });
+
+        // Aggiungi un separatore tra gli ordini di diversi tavoli, tranne per l'ultimo tavolo
+        if (table !== Object.keys(orders)[Object.keys(orders).length - 1]) {
+            const separator = document.createElement('hr');
+            orderList.appendChild(separator);
         }
     }
+}
+
 
     // Salva ordini nel LocalStorage
     const saveOrder = (table, bottle, quantity) => {
